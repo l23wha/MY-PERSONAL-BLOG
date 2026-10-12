@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edite Article</title>
+</head>
+<body>
+    <main>
+          <a href="">Back to Dashboard</a>
+          <h2>Edit Article</h2>
+          <form action="/admin/articles/<%=article.id%>" method="post"> 
+                        <div>
+                            <label>label</label><br>
+                            <input type="text" name="title" value="<%=article.title%>" required style="width: 300px;">
+                        </div>
+                        <br>
+                        <div>
+                            <label>Date of Publication:</label><br>
+                            <input type="date" name="date" value="<%=article.date%>" required>
+                        </div>
+                        <br>
+                        <div>
+                            <label>Content:</label><br>
+                            <textarea name="content" rows="10" cols="50" required><%=article.content%></textarea>
+                        </div>
+                        <br>
+                        <button type="submit">Update Article</button>
+          </form>
+    </main>
+</body>
+</html>

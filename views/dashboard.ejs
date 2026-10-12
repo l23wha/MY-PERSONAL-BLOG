@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    
+</head>
+<body>
+    <header>
+         <h1>Admin Dashboard</h1>
+         <a href="/">View Blog (Guest View)</a>
+         <a href="/admin/articles/new">+ Add new Articles</a>
+    </header>
+
+       <main>
+           <h2>Manage Articles</h2>
+            <% if(articles.length===0){%>
+                    <p>No articles found.</p>
+                <%} else{ %>
+                     <table border="1" cellpadding="10">
+                           <tr>
+                             <th>Title</th>
+                             <th>Date</th>
+                             <th>Actions</th>
+                           </tr>
+                           <% articles.forEach(article=>{ %>
+                              <tr>
+                                <td><%=article.title%></td>
+                                <td><%=article.date%></td>
+                                <td>
+                                     <a href="/admin/articles/<%=article.id%>/edit">Edit</a>
+                                      <form action="/admin/articles/<%=article.id%>/delete" method="POST" style="display: inline;">
+                                        <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                                      </form>
+                                </td>
+                              </tr>
+                         <%  }) %>
+                     </table>
+
+
+                <%}%>
+       </main>
+    
+</body>
+</html>
