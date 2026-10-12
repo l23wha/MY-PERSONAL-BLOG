@@ -2,6 +2,7 @@
 const express=require('express');
  const fs=require('fs');
   const path=require('path');
+  const {marked}=require('marked');
 
   const app=express();
    const PORT=3000;
@@ -29,7 +30,7 @@ const express=require('express');
                    return res.status(500).send("Server error");
               }
               
-               const articles=files.map(file=>{
+               let articles=files.map(file=>{
                   const filePath=path.join(articlesDir,file);
 
                   const content= fs.readFileSync(filePath,'utf-8');
@@ -42,7 +43,13 @@ const express=require('express');
 
                articles.sort((a,b)=>new Date(b.date)- new Date(a.date));
 
-                res.render('index',{articles});
+                const searchQuery=req.query.search;
+                if(searchQuery){
+                     const query=searchQuery.toLowerCase();
+                     articles=articles.filter(article=> article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query))
+                }
+
+                res.render('index',{articles,searchQuery});
 
          })
      });
@@ -51,13 +58,16 @@ const express=require('express');
 
      app.get('/articles/:id',(req,res)=>{
            const filePath=path.join(articlesDir,`${req.params.id}.json`);
-
+               
              if(!fs.existsSync(filePath)){
                 return res.status(404).send("Article not found");
              }
 
              const article=JSON.parse(fs.readFileSync(filePath,'utf-8'));
-             res.render('article',{article});
+
+             //Convert the markdown content in html
+             const htmlContent=marked.parse(article.content);
+             res.render('article',{article,htmlContent});
      });
 
      //Admin Section 
@@ -117,7 +127,7 @@ app.post('/admin/articles/:id',(req,res)=>{
       const {title,content,date}=req.body;
 
       const id=req.params.id;
-      const filePath=path.join(articlesDir,`${id}.josn`);
+      const filePath=path.join(articlesDir,`${id}.json`);
 
          if(!fs.existsSync(filePath)){
               return res.status(404).send("Article not found");
